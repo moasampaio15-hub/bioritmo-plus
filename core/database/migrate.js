@@ -13,53 +13,56 @@ CREATE TABLE IF NOT EXISTS _migrations (
 );
 `;
 
-async function initMigrationsTable() {
-    await exec(MIGRATIONS_TABLE);
+function initMigrationsTable() {
+    exec(MIGRATIONS_TABLE);
 }
 
-async function getAppliedMigrations() {
+function getAppliedMigrations() {
     try {
-        const rows = await query('SELECT nome FROM _migrations');
+        const rows = query('SELECT nome FROM _migrations');
         return rows.map(m => m.nome);
     } catch {
         return [];
     }
 }
 
-async function recordMigration(nome) {
-    await run('INSERT INTO _migrations (nome) VALUES (?)', [nome]);
+function recordMigration(nome) {
+    run('INSERT INTO _migrations (nome) VALUES (?)', [nome]);
 }
 
-async function applySchema() {
+function applySchema() {
     console.log('[MIGRATE] Aplicando schema principal...');
     const schema = fs.readFileSync(SCHEMA_PATH, 'utf-8');
-    await exec(schema);
+    exec(schema);
     console.log('[MIGRATE] Schema aplicado com sucesso');
 }
 
-async function migrate() {
+function migrate() {
     console.log('[MIGRATE] Iniciando migrações...');
     
-    await initMigrationsTable();
+    initMigrationsTable();
     
-    const applied = await getAppliedMigrations();
+    const applied = getAppliedMigrations();
     
     // Schema principal
     if (!applied.includes('schema_inicial')) {
-        await applySchema();
-        await recordMigration('schema_inicial');
+        applySchema();
+        recordMigration('schema_inicial');
     }
     
     console.log('[MIGRATE] Migrações concluídas');
-    console.log('[MIGRATE] Total de migrações aplicadas:', (await getAppliedMigrations()).length);
+    console.log('[MIGRATE] Total de migrações aplicadas:', getAppliedMigrations().length);
 }
 
 // Executar se chamado diretamente
 if (require.main === module) {
-    migrate().then(() => process.exit(0)).catch(err => {
+    try {
+        migrate();
+        process.exit(0);
+    } catch (err) {
         console.error('[MIGRATE] Erro:', err);
         process.exit(1);
-    });
+    }
 }
 
 module.exports = { migrate };
