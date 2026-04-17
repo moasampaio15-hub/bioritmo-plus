@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: bioritmo-plus
+    runtime: node
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: PORT
+        value: 10000
+    disk:
+      name: bioritmo-data
+      mountPath: /opt/render/project/src/data
+      sizeGB: 1

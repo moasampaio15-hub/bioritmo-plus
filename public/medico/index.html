@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIORITMO+ | Painel Médico</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="medico-premium.css">
+</head>
+<body>
+    <div class="medico-app">
+        <!-- Sidebar -->
+        <aside class="medico-sidebar">
+            <div class="sidebar-header">
+                <div class="logo-medico">
+                    <div class="logo-icon">🌊</div>
+                    <div class="logo-text">
+                        <span class="logo-brand">BIORITMO+</span>
+                        <span class="logo-sub">Painel Médico</span>
+                    </div>
+                </div>
+                <div class="logo-sampaio-sidebar">
+                    <img src="/images/logo-sampaio.jpg" alt="Sampaio">
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" data-page="pacientes">
+                    <i class="fas fa-users"></i>
+                    <span>Pacientes</span>
+                    <span class="nav-badge">24</span>
+                </a>
+                <a href="#" class="nav-item" data-page="alertas">
+                    <i class="fas fa-bell"></i>
+                    <span>Alertas</span>
+                    <span class="nav-badge alert">3</span>
+                </a>
+                <a href="#" class="nav-item" data-page="relatorios">
+                    <i class="fas fa-file-medical"></i>
+                    <span>Relatórios</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="medico-profile">
+                    <div class="medico-avatar">DM</div>
+                    <div class="medico-info">
+                        <span class="medico-name">Dr. Moacir</span>
+                        <span class="medico-crm">CRM-PA 12345</span>
+                    </div>
+                </div>
+                <button class="btn-logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="medico-main">
+            <!-- Header -->
+            <header class="medico-header">
+                <div class="header-search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Buscar paciente...">
+                </div>
+                <div class="header-actions">
+                    <button class="btn-header">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-dot"></span>
+                    </button>
+                    <button class="btn-header">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="medico-content" id="content-area">
+                <!-- Dashboard -->
+                <div class="page-dashboard active">
+                    <!-- Stats Cards -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-primary">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-value">24</span>
+                                <span class="stat-label">Pacientes Ativos</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon bg-danger">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-value">3</span>
+                                <span class="stat-label">Em Risco</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon bg-warning">
+                                <i class="fas fa-exclamation-circle"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-value">5</span>
+                                <span class="stat-label">Atenção</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon bg-success">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-value">16</span>
+                                <span class="stat-label">Estáveis</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Views -->
+                    <div class="section-grid">
+                        <div class="section-card">
+                            <div class="section-header">
+                                <h3>Pacientes em Risco</h3>
+                                <a href="#" class="link-view">Ver todos</a>
+                            </div>
+                            <div class="risk-list">
+                                <div class="risk-item">
+                                    <div class="risk-avatar">AS</div>
+                                    <div class="risk-info">
+                                        <span class="risk-name">Ana Silva</span>
+                                        <span class="risk-reason">Score caiu 15 pontos</span>
+                                    </div>
+                                    <span class="risk-score low">42</span>
+                                </div>
+                                <div class="risk-item">
+                                    <div class="risk-avatar">JO</div>
+                                    <div class="risk-info">
+                                        <span class="risk-name">João Oliveira</span>
+                                        <span class="risk-reason">Sem check-in há 5 dias</span>
+                                    </div>
+                                    <span class="risk-score low">38</span>
+                                </div>
+                                <div class="risk-item">
+                                    <div class="risk-avatar">MC</div>
+                                    <div class="risk-info">
+                                        <span class="risk-name">Maria Costa</span>
+                                        <span class="risk-reason">Dor em tendência crescente</span>
+                                    </div>
+                                    <span class="risk-score low">45</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section-card">
+                            <div class="section-header">
+                                <h3>Baixa Adesão</h3>
+                                <a href="#" class="link-view">Ver todos</a>
+                            </div>
+                            <div class="adherence-list">
+                                <div class="adherence-item">
+                                    <div class="adherence-info">
+                                        <span class="adherence-name">Pedro Santos</span>
+                                        <div class="adherence-bar">
+                                            <div class="adherence-fill" style="width: 30%"></div>
+                                        </div>
+                                    </div>
+                                    <span class="adherence-value">30%</span>
+                                </div>
+                                <div class="adherence-item">
+                                    <div class="adherence-info">
+                                        <span class="adherence-name">Lucia Mendes</span>
+                                        <div class="adherence-bar">
+                                            <div class="adherence-fill" style="width: 45%"></div>
+                                        </div>
+                                    </div>
+                                    <span class="adherence-value">45%</span>
+                                </div>
+                                <div class="adherence-item">
+                                    <div class="adherence-info">
+                                        <span class="adherence-name">Carlos Lima</span>
+                                        <div class="adherence-bar">
+                                            <div class="adherence-fill" style="width: 50%"></div>
+                                        </div>
+                                    </div>
+                                    <span class="adherence-value">50%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts -->
+                    <div class="charts-grid">
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h3>Distribuição de Pacientes</h3>
+                            </div>
+                            <div class="chart-body">
+                                <canvas id="chart-distribuicao"></canvas>
+                            </div>
+                        </div>
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h3>Evolução do Score Médio</h3>
+                            </div>
+                            <div class="chart-body">
+                                <canvas id="chart-evolucao"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lista de Pacientes -->
+                <div class="page-pacientes hidden">
+                    <div class="page-header">
+                        <h2>Lista de Pacientes</h2>
+                        <div class="header-filters">
+                            <select class="filter-select">
+                                <option>Todos os status</option>
+                                <option>Estáveis</option>
+                                <option>Atenção</option>
+                                <option>Risco</option>
+                            </select>
+                            <select class="filter-select">
+                                <option>Ordenar por</option>
+                                <option>Score mais baixo</option>
+                                <option>Score mais alto</option>
+                                <option>Check-in recente</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="pacientes-grid" id="pacientes-list">
+                        <!-- Pacientes serão carregados dinamicamente -->
+                    </div>
+                </div>
+
+                <!-- Perfil do Paciente -->
+                <div class="page-perfil hidden">
+                    <button class="btn-back" onclick="showPage('pacientes')">
+                        <i class="fas fa-arrow-left"></i>
+                        Voltar
+                    </button>
+                    
+                    <div class="perfil-header">
+                        <div class="perfil-avatar">AS</div>
+                        <div class="perfil-info">
+                            <h2>Ana Silva</h2>
+                            <span class="perfil-meta">32 anos • Feminino • Desde 15/03/2024</span>
+                        </div>
+                        <div class="perfil-score">
+                            <span class="score-value">42</span>
+                            <span class="score-label">Score Atual</span>
+                        </div>
+                    </div>
+
+                    <div class="perfil-tabs">
+                        <button class="tab-btn active" data-tab="resumo">Resumo</button>
+                        <button class="tab-btn" data-tab="evolucao">Evolução</button>
+                        <button class="tab-btn" data-tab="habitos">Hábitos</button>
+                        <button class="tab-btn" data-tab="alertas">Alertas</button>
+                    </div>
+
+                    <div class="perfil-content">
+                        <div class="tab-content active" id="tab-resumo">
+                            <div class="resumo-grid">
+                                <div class="resumo-card">
+                                    <h4>Resumo Clínico</h4>
+                                    <ul class="resumo-list">
+                                        <li>📉 Energia em queda nos últimos 5 dias</li>
+                                        <li>😴 Sono irregular na última semana</li>
+                                        <li>📊 Score caiu 15 pontos em 7 dias</li>
+                                        <li>⚠️ Baixa consistência de hábitos</li>
+                                    </ul>
+                                </div>
+                                <div class="resumo-card">
+                                    <h4>Adesão</h4>
+                                    <div class="adesao-stats">
+                                        <div class="adesao-item">
+                                            <span>Últimos 7 dias</span>
+                                            <span class="adesao-value">71%</span>
+                                        </div>
+                                        <div class="adesao-item">
+                                            <span>Últimos 30 dias</span>
+                                            <span class="adesao-value">65%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="medico-premium.js"></script>
+</body>
+</html>

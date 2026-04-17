@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#7C3AED">
+    <title>BIORITMO+ | Inteligência para sua Saúde</title>
+    <meta name="description" content="Transforme seus dados de saúde em inteligência pessoal. Acompanhe sono, energia, humor e hábitos.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="/css/bioritmo-premium.css">
+</head>
+<body>
+    <div id="app">
+        <!-- ONBOARDING -->
+        <div id="onboarding-screen" class="screen">
+            <div class="onboarding-container">
+                <div class="onboarding-slide active" data-slide="1">
+                    <div class="onboarding-visual">
+                        <div class="pulse-ring"></div>
+                        <div class="onboarding-icon">🌊</div>
+                    </div>
+                    <h1 class="onboarding-title">Seu corpo fala.<br>Nós traduzimos.</h1>
+                    <p class="onboarding-text">Transforme sono, energia e hábitos em inteligência pessoal para uma vida mais equilibrada.</p>
+                </div>
+                
+                <div class="onboarding-slide" data-slide="2">
+                    <div class="onboarding-visual">
+                        <div class="onboarding-icon">📊</div>
+                    </div>
+                    <h1 class="onboarding-title">Dados simples.<br>Insights poderosos.</h1>
+                    <p class="onboarding-text">Nossa tecnologia identifica padrões no seu corpo que você nunca percebeu sozinho.</p>
+                </div>
+                
+                <div class="onboarding-slide" data-slide="3">
+                    <div class="onboarding-visual">
+                        <div class="onboarding-icon">✨</div>
+                    </div>
+                    <h1 class="onboarding-title">Pequenos hábitos.<br>Grandes mudanças.</h1>
+                    <p class="onboarding-text">Descubra como pequenas alterações na rotina transformam sua energia e bem-estar.</p>
+                </div>
+                
+                <div class="onboarding-dots">
+                    <span class="dot active" data-slide="1"></span>
+                    <span class="dot" data-slide="2"></span>
+                    <span class="dot" data-slide="3"></span>
+                </div>
+                
+                <button class="btn-primary btn-large" id="btn-onboarding-next">
+                    <span>Continuar</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- AUTH SCREEN -->
+        <div id="auth-screen" class="screen hidden">
+            <div class="auth-container">
+                <div class="auth-header">
+                    <div class="logo-premium">
+                        <div class="logo-icon">🌊</div>
+                        <span>BIORITMO+</span>
+                    </div>
+                    <div class="logo-sampaio">
+                        <img src="/images/logo-sampaio.jpg" alt="Sampaio Diagnóstico" class="sampaio-img">
+                        <span class="sampaio-text">by Sampaio Diagnóstico</span>
+                    </div>
+                </div>
+                
+                <div class="auth-tabs">
+                    <button class="auth-tab active" data-tab="login">Entrar</button>
+                    <button class="auth-tab" data-tab="register">Criar conta</button>
+                </div>
+                
+                <!-- Login Form -->
+                <form id="login-form" class="auth-form active">
+                    <div class="input-group">
+                        <label>Email</label>
+                        <input type="email" id="login-email" placeholder="seu@email.com" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Senha</label>
+                        <input type="password" id="login-senha" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn-primary btn-large">
+                        <span>Entrar</span>
+                        <div class="spinner hidden"></div>
+                    </button>
+                </form>
+                
+                <!-- Register Form -->
+                <form id="register-form" class="auth-form hidden">
+                    <div class="input-group">
+                        <label>Nome completo</label>
+                        <input type="text" id="reg-nome" placeholder="Como quer ser chamado?" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Email</label>
+                        <input type="email" id="reg-email" placeholder="seu@email.com" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Senha</label>
+                        <input type="password" id="reg-senha" placeholder="Mínimo 6 caracteres" required minlength="6">
+                    </div>
+                    <button type="submit" class="btn-primary btn-large">
+                        <span>Criar conta gratuita</span>
+                        <div class="spinner hidden"></div>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- MAIN APP -->
+        <div id="main-app" class="screen hidden">
+            <!-- Header -->
+            <header class="app-header">
+                <div class="header-greeting">
+                    <span id="greeting-text">Bom dia</span>
+                    <h2 id="user-name-display">Usuário</h2>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-icon" id="btn-notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge">2</span>
+                    </button>
+                    <button class="btn-icon" id="btn-menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Navigation -->
+            <nav class="bottom-nav">
+                <button class="nav-item active" data-page="home">
+                    <i class="fas fa-home"></i>
+                    <span>Início</span>
+                </button>
+                <button class="nav-item" data-page="checkin">
+                    <div class="nav-item-center">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <span>Check-in</span>
+                </button>
+                <button class="nav-item" data-page="dashboard">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </button>
+            </nav>
+
+            <!-- Content Area -->
+            <main class="app-content" id="content-area">
+                <!-- Dynamic content loaded here -->
+            </main>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="/js/bioritmo-premium.js"></script>
+</body>
+</html>
