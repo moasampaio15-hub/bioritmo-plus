@@ -1,9 +1,9 @@
-const sqlite3 = require('@libsql/sqlite3');
+const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
 
 const DATA_DIR = path.join(__dirname, '..', '..', 'data');
-const DB_PATH = 'file:' + path.join(DATA_DIR, 'bioritmo-v2.db');
+const DB_PATH = path.join(DATA_DIR, 'bioritmo-v2.db');
 
 // Garantir que o diretório de dados existe
 if (!fs.existsSync(DATA_DIR)) {
