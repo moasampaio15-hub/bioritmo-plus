@@ -72,10 +72,10 @@ app.use(notFoundHandler);
 app.use(errorHandler);
 
 // Inicialização
-function start() {
+async function start() {
     try {
         // Executar migrações
-        migrate();
+        await migrate();
         
         // Iniciar servidor
         app.listen(PORT, () => {

@@ -1,4 +1,4 @@
-const Database = require('better-sqlite3');
+const sqlite3 = require('@libsql/sqlite3');
 const path = require('path');
 const fs = require('fs');
 
@@ -16,11 +16,11 @@ let db = null;
 function getConnection() {
     if (!db) {
         try {
-            db = new Database(DB_PATH);
+            db = new sqlite3.Database(DB_PATH);
             console.log('[DB] Conexão estabelecida:', DB_PATH);
             
             // Habilitar foreign keys
-            db.pragma('foreign_keys = ON');
+            db.run('PRAGMA foreign_keys = ON');
         } catch (err) {
             console.error('[DB] Erro ao conectar:', err.message);
             throw err;
@@ -32,8 +32,10 @@ function getConnection() {
 function closeConnection() {
     if (db) {
         try {
-            db.close();
-            console.log('[DB] Conexão fechada');
+            db.close((err) => {
+                if (err) console.error('[DB] Erro ao fechar:', err.message);
+                else console.log('[DB] Conexão fechada');
+            });
         } catch (err) {
             console.error('[DB] Erro ao fechar:', err.message);
         }
@@ -41,41 +43,59 @@ function closeConnection() {
     }
 }
 
-// Helpers para queries (síncronos com better-sqlite3)
+// Helpers para queries (Promise-based)
 function query(sql, params = []) {
-    const conn = getConnection();
-    return conn.prepare(sql).all(...params);
+    return new Promise((resolve, reject) => {
+        const conn = getConnection();
+        conn.all(sql, params, (err, rows) => {
+            if (err) reject(err);
+            else resolve(rows);
+        });
+    });
 }
 
 function queryOne(sql, params = []) {
-    const conn = getConnection();
-    return conn.prepare(sql).get(...params);
+    return new Promise((resolve, reject) => {
+        const conn = getConnection();
+        conn.get(sql, params, (err, row) => {
+            if (err) reject(err);
+            else resolve(row);
+        });
+    });
 }
 
 function run(sql, params = []) {
-    const conn = getConnection();
-    const result = conn.prepare(sql).run(...params);
-    return {
-        lastInsertRowid: result.lastInsertRowid,
-        changes: result.changes
-    };
+    return new Promise((resolve, reject) => {
+        const conn = getConnection();
+        conn.run(sql, params, function(err) {
+            if (err) reject(err);
+            else resolve({
+                lastInsertRowid: this.lastID,
+                changes: this.changes
+            });
+        });
+    });
 }
 
 function exec(sql) {
-    const conn = getConnection();
-    conn.exec(sql);
+    return new Promise((resolve, reject) => {
+        const conn = getConnection();
+        conn.exec(sql, (err) => {
+            if (err) reject(err);
+            else resolve();
+        });
+    });
 }
 
 // Transaction helper
-function transaction(fn) {
-    const conn = getConnection();
-    conn.prepare('BEGIN TRANSACTION').run();
+async function transaction(fn) {
+    await run('BEGIN TRANSACTION');
     try {
-        const result = fn();
-        conn.prepare('COMMIT').run();
+        const result = await fn();
+        await run('COMMIT');
         return result;
     } catch (err) {
-        conn.prepare('ROLLBACK').run();
+        await run('ROLLBACK');
         throw err;
     }
 }
