@@ -1,9 +1,9 @@
 services:
   - type: web
     name: bioritmo-plus
-    runtime: bun
-    buildCommand: bun install
-    startCommand: bun server.js
+    runtime: node
+    buildCommand: npm install --build-from-source=false || npm install
+    startCommand: node server.js
     envVars:
       - key: NODE_ENV
         value: production
