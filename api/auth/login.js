@@ -1,5 +1,7 @@
-import { createClient } from '@libsql/client';
 import crypto from 'crypto';
+
+// Simulação de banco em memória (temporário até resolver Turso)
+const users = [];
 
 function hashPassword(password) {
   return crypto.createHash('sha256').update(password).digest('hex');
@@ -10,31 +12,16 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  if (!process.env.TURSO_DATABASE_URL || !process.env.TURSO_AUTH_TOKEN) {
-    return res.status(500).json({ error: 'Configuração do banco de dados incompleta' });
-  }
-
-  const db = createClient({
-    url: process.env.TURSO_DATABASE_URL,
-    authToken: process.env.TURSO_AUTH_TOKEN,
-  });
-
   const { email, password } = req.body;
   const hashedPassword = hashPassword(password);
 
-  try {
-    const result = await db.execute({
-      sql: 'SELECT * FROM users WHERE email = ? AND password = ?',
-      args: [email, hashedPassword],
-    });
-    const user = result.rows[0];
-    if (user) {
-      res.json(user);
-    } else {
-      res.status(401).json({ error: 'Email ou senha incorretos.' });
-    }
-  } catch (e) {
-    console.error('Erro no login:', e);
-    res.status(500).json({ error: 'Erro no login.' });
+  const user = users.find(u => u.email === email && u.password === hashedPassword);
+
+  if (!user) {
+    return res.status(401).json({ error: 'Email ou senha incorretos.' });
   }
+
+  // Retornar sem a senha
+  const { password: _, ...userWithoutPassword } = user;
+  res.json(userWithoutPassword);
 }
