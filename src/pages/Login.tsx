@@ -1,31 +1,69 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { api } from "../lib/api.demo";
 import { useAuth } from "../App";
-import { useToast } from "../context/ToastContext";
 import { Activity } from "lucide-react";
 import { motion } from "motion/react";
 
+// API DEMO INLINE - Garante funcionar
+const DEMO_USERS_KEY = 'bioritmo_demo_users_v2';
+
+const getUsers = () => JSON.parse(localStorage.getItem(DEMO_USERS_KEY) || '[]');
+const saveUsers = (users: any[]) => localStorage.setItem(DEMO_USERS_KEY, JSON.stringify(users));
+
+// Criar usuário demo na hora
+const createDemoUser = () => {
+  const users = getUsers();
+  if (!users.find((u: any) => u.email === 'demo@sampaio.com')) {
+    users.push({
+      id: 1,
+      full_name: 'Dr. Moacir Sampaio',
+      email: 'demo@sampaio.com',
+      password: 'demo123',
+      is_premium: true
+    });
+    saveUsers(users);
+    console.log('✅ Demo user created');
+  }
+};
+
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("demo@sampaio.com");
+  const [password, setPassword] = useState("demo123");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
-  const { showToast } = useToast();
   const navigate = useNavigate();
+
+  // Criar demo ao carregar
+  useEffect(() => {
+    createDemoUser();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
+    
     try {
-      const user = await api.login({ email, password });
-      login(user);
-      showToast(`Bem-vindo de volta, ${user.full_name}!`, "success");
+      // Garantir demo existe
+      createDemoUser();
+      
+      // Buscar usuário
+      const users = getUsers();
+      const user = users.find((u: any) => u.email === email && u.password === password);
+      
+      if (!user) {
+        throw new Error('Email ou senha incorretos.');
+      }
+      
+      // Login
+      const { password: _, ...userWithoutPassword } = user;
+      login(userWithoutPassword);
+      
+      // Redirecionar
       navigate("/");
     } catch (err: any) {
-      setError(err.message || "Email ou senha inválidos. Tente novamente.");
+      setError(err.message || "Erro ao fazer login.");
     } finally {
       setLoading(false);
     }
@@ -39,13 +77,25 @@ export default function Login() {
         className="w-full max-w-sm space-y-10"
       >
         <div className="text-center space-y-4">
-          <div className="inline-flex p-4 premium-gradient rounded-[2rem] shadow-xl shadow-sky-500/20 mb-2">
+          <div className="inline-flex p-4 bg-gradient-to-br from-sky-500 to-blue-600 rounded-[2rem] shadow-xl shadow-sky-500/20 mb-2">
             <Activity className="w-10 h-10 text-white" />
           </div>
           <div className="space-y-1">
-            <h1 className="text-4xl font-black text-display text-slate-900 tracking-tight">Bioritmo<span className="text-sky-600">+</span></h1>
+            <h1 className="text-4xl font-black text-slate-900 tracking-tight">Bioritmo<span className="text-sky-600">+</span></h1>
             <p className="text-slate-500 font-medium">Bem-vindo de volta ao seu equilíbrio.</p>
           </div>
+        </div>
+
+        {/* Demo info */}
+        <div className="p-4 bg-sky-50 rounded-2xl border border-sky-200">
+          <p className="text-xs text-sky-800 font-bold mb-1">🎮 Modo Demo Ativo</p>
+          <p className="text-xs text-sky-600">
+            Email: <strong>demo@sampaio.com</strong><br/>
+            Senha: <strong>demo123</strong>
+          </p>
+          <p className="text-xs text-sky-500 mt-2">
+            Ou crie sua própria conta gratuitamente!
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -63,7 +113,6 @@ export default function Login() {
           <div className="space-y-2">
             <div className="flex justify-between items-center ml-1">
               <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Senha</label>
-              <button type="button" className="text-[10px] font-bold text-sky-600 uppercase tracking-widest hover:underline">Esqueci</button>
             </div>
             <input
               type="password"
@@ -94,22 +143,10 @@ export default function Login() {
           </button>
         </form>
 
-        {/* Demo info */}
-        <div className="p-4 bg-sky-50 rounded-2xl border border-sky-200">
-          <p className="text-xs text-sky-800 font-bold mb-1">🎮 Modo Demo Ativo</p>
-          <p className="text-xs text-sky-600">
-            Email: <strong>demo@sampaio.com</strong><br/>
-            Senha: <strong>demo123</strong>
-          </p>
-          <p className="text-xs text-sky-500 mt-2">
-            Ou crie sua própria conta gratuitamente!
-          </p>
-        </div>
-
         <p className="text-center text-sm text-slate-500 font-medium">
           Novo por aqui?{" "}
           <Link to="/signup" className="text-sky-600 font-black hover:underline">
-            Criar conta grátis
+            Criar conta
           </Link>
         </p>
       </motion.div>

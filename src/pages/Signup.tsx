@@ -1,10 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { api } from "../lib/api.demo";
 import { useAuth } from "../App";
-import { useToast } from "../context/ToastContext";
 import { Activity } from "lucide-react";
 import { motion } from "motion/react";
+
+// API DEMO INLINE
+const DEMO_USERS_KEY = 'bioritmo_demo_users_v2';
+
+const getUsers = () => JSON.parse(localStorage.getItem(DEMO_USERS_KEY) || '[]');
+const saveUsers = (users: any[]) => localStorage.setItem(DEMO_USERS_KEY, JSON.stringify(users));
+
+// Criar usuário demo
+const createDemoUser = () => {
+  const users = getUsers();
+  if (!users.find((u: any) => u.email === 'demo@sampaio.com')) {
+    users.push({
+      id: 1,
+      full_name: 'Dr. Moacir Sampaio',
+      email: 'demo@sampaio.com',
+      password: 'demo123',
+      is_premium: true
+    });
+    saveUsers(users);
+  }
+};
 
 export default function Signup() {
   const [fullName, setFullName] = useState("");
@@ -13,20 +32,43 @@ export default function Signup() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
-  const { showToast } = useToast();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    createDemoUser();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
+
     try {
-      const user = await api.signup({ full_name: fullName, email, password });
-      login(user);
-      showToast("Conta criada com sucesso! Bem-vindo.", "success");
-      navigate("/profile"); // Go to profile to complete setup
+      createDemoUser();
+      
+      const users = getUsers();
+      
+      if (users.find((u: any) => u.email === email)) {
+        throw new Error('Este email já está cadastrado.');
+      }
+
+      const newUser = {
+        id: Date.now(),
+        full_name: fullName,
+        email: email,
+        password: password,
+        is_premium: false
+      };
+
+      users.push(newUser);
+      saveUsers(users);
+
+      const { password: _, ...userWithoutPassword } = newUser;
+      login(userWithoutPassword);
+      
+      navigate("/");
     } catch (err: any) {
-      setError(err.message || "Erro ao cadastrar. Email já pode estar em uso.");
+      setError(err.message || "Erro ao criar conta.");
     } finally {
       setLoading(false);
     }
@@ -40,18 +82,18 @@ export default function Signup() {
         className="w-full max-w-sm space-y-10"
       >
         <div className="text-center space-y-4">
-          <div className="inline-flex p-4 premium-gradient rounded-[2rem] shadow-xl shadow-sky-500/20 mb-2">
+          <div className="inline-flex p-4 bg-gradient-to-br from-sky-500 to-blue-600 rounded-[2rem] shadow-xl shadow-sky-500/20 mb-2">
             <Activity className="w-10 h-10 text-white" />
           </div>
           <div className="space-y-1">
-            <h1 className="text-4xl font-black text-display text-slate-900 tracking-tight">Bioritmo<span className="text-sky-600">+</span></h1>
-            <p className="text-slate-500 font-medium">Sua jornada para o bem-estar começa aqui.</p>
+            <h1 className="text-4xl font-black text-slate-900 tracking-tight">Bioritmo<span className="text-sky-600">+</span></h1>
+            <p className="text-slate-500 font-medium">Comece sua jornada de bem-estar.</p>
           </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Nome Completo</label>
+            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Nome completo</label>
             <input
               type="text"
               required
@@ -99,12 +141,12 @@ export default function Signup() {
             disabled={loading}
             className="w-full py-5 bg-slate-900 text-white font-black text-sm rounded-2xl shadow-xl shadow-slate-900/10 hover:bg-slate-800 active:scale-[0.98] transition-all disabled:opacity-50 mt-4"
           >
-            {loading ? "Criando conta..." : "Começar Agora"}
+            {loading ? "Criando conta..." : "Criar Conta"}
           </button>
         </form>
 
         <p className="text-center text-sm text-slate-500 font-medium">
-          Já tem uma conta?{" "}
+          Já tem conta?{" "}
           <Link to="/login" className="text-sky-600 font-black hover:underline">
             Entrar
           </Link>
