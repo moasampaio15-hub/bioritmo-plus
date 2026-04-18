@@ -4,19 +4,9 @@ import { useAuth } from "../App";
 import { Activity } from "lucide-react";
 import { motion } from "motion/react";
 
-// USUÁRIO DEMO HARDCODED - Funciona sempre!
-const DEMO_USER = {
-  id: 1,
-  full_name: 'Dr. Moacir Sampaio',
-  email: 'demo@sampaio.com',
-  password: 'demo123',
-  is_premium: true
-};
-
 export default function Login() {
   const [email, setEmail] = useState("demo@sampaio.com");
   const [password, setPassword] = useState("demo123");
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -24,21 +14,17 @@ export default function Login() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError("");
     
-    // Delay para parecer real
-    await new Promise(r => setTimeout(r, 500));
+    // Sempre loga com o usuário demo, independente do que digitar
+    const user = {
+      id: 1,
+      full_name: 'Dr. Moacir Sampaio',
+      email: email || 'demo@sampaio.com',
+      is_premium: true
+    };
     
-    // Verificar se é o usuário demo
-    if (email === DEMO_USER.email && password === DEMO_USER.password) {
-      const { password: _, ...userWithoutPassword } = DEMO_USER;
-      login(userWithoutPassword);
-      navigate("/");
-    } else {
-      setError('Email ou senha incorretos. Use: demo@sampaio.com / demo123');
-    }
-    
-    setLoading(false);
+    login(user);
+    navigate("/");
   };
 
   return (
@@ -72,8 +58,7 @@ export default function Login() {
         <div className="p-4 bg-sky-50 rounded-2xl border border-sky-200">
           <p className="text-sm text-sky-800 font-bold mb-2">🎮 Modo Demo</p>
           <p className="text-sm text-sky-700">
-            <strong>Email:</strong> demo@sampaio.com<br/>
-            <strong>Senha:</strong> demo123
+            Clique em "Entrar" para acessar o app!
           </p>
         </div>
 
@@ -81,7 +66,6 @@ export default function Login() {
           <div>
             <input
               type="email"
-              required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-5 py-4 rounded-2xl bg-white border border-slate-200 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 transition-all outline-none text-slate-900 font-medium"
@@ -91,7 +75,6 @@ export default function Login() {
           <div>
             <input
               type="password"
-              required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-5 py-4 rounded-2xl bg-white border border-slate-200 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 transition-all outline-none text-slate-900 font-medium"
@@ -99,22 +82,12 @@ export default function Login() {
             />
           </div>
 
-          {error && (
-            <motion.p 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-red-500 text-sm font-bold text-center bg-red-50 py-3 rounded-xl border border-red-100"
-            >
-              {error}
-            </motion.p>
-          )}
-
           <button
             type="submit"
             disabled={loading}
             className="w-full py-4 bg-sky-500 text-white font-bold text-lg rounded-2xl shadow-lg shadow-sky-500/25 disabled:opacity-50"
           >
-            {loading ? "Entrando..." : "Entrar"}
+            {loading ? "Entrando..." : "Entrar no App"}
           </button>
         </form>
       </motion.div>
