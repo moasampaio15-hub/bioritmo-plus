@@ -151,11 +151,11 @@
                     
                     <!-- Quick Actions -->
                     <div class="quick-actions">
-                        <div class="quick-action" onclick="navigateTo('checkin')">
+                        <div class="quick-action" onclick="go('checkin')">
                             <div class="quick-action-icon"><i class="fas fa-plus"></i></div>
                             <span>Novo Check-in</span>
                         </div>
-                        <div class="quick-action" onclick="navigateTo('dashboard')">
+                        <div class="quick-action" onclick="go('dashboard')">
                             <div class="quick-action-icon"><i class="fas fa-chart-line"></i></div>
                             <span>Meu Dashboard</span>
                         </div>
@@ -261,7 +261,7 @@
                         <textarea id="notas" rows="3" placeholder="Como foi seu dia?"></textarea>
                     </div>
                     
-                    <button class="btn btn-primary btn-large" onclick="salvarCheckin()">
+                    <button class="btn btn-primary btn-large" onclick="saveCheckin()">
                         <i class="fas fa-check"></i> Salvar Check-in
                     </button>
                 </div>
@@ -290,15 +290,15 @@
             
             <!-- Bottom Navigation -->
             <div class="bottom-nav">
-                <button class="nav-item active" data-page="home" onclick="navigateTo('home')">
+                <button class="nav-item active" data-page="home" onclick="go('home')">
                     <i class="fas fa-home"></i>
                     <span>Início</span>
                 </button>
-                <button class="nav-item" data-page="checkin" onclick="navigateTo('checkin')">
+                <button class="nav-item" data-page="checkin" onclick="go('checkin')">
                     <i class="fas fa-plus-circle"></i>
                     <span>Check-in</span>
                 </button>
-                <button class="nav-item" data-page="dashboard" onclick="navigateTo('dashboard')">
+                <button class="nav-item" data-page="dashboard" onclick="go('dashboard')">
                     <i class="fas fa-chart-line"></i>
                     <span>Gráficos</span>
                 </button>
@@ -310,6 +310,6 @@
     <div class="toast-container" id="toast-container"></div>
     
     <!-- Scripts -->
-    <script src="/js/bioritmo-v2.js"></script>
+    <script src="/js/app-simples.js"></script>
 </body>
 </html>
