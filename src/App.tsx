@@ -1,12 +1,9 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, Link, useLocation } from "react-router-dom";
 import { User } from "./types";
 import { api } from "./lib/api";
 import { ThemeProvider } from "./context/ThemeContext";
 import { ToastProvider } from "./context/ToastContext";
-import { Layout } from "./components/Layout";
-
-// Importações diretas (sem lazy loading para evitar travamento)
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Home from "./pages/Home";
@@ -21,6 +18,7 @@ import Breathing from "./pages/Breathing";
 import Achievements from "./pages/Achievements";
 import WellnessGuide from "./pages/WellnessGuide";
 import Exercises from "./pages/Exercises";
+import { Layout } from "./components/Layout";
 
 interface AuthContextType {
   user: User | null;
@@ -37,33 +35,12 @@ export function useAuth() {
   return context;
 }
 
-// Componente de loading simples
-function PageLoader() {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50">
-      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sky-600"></div>
-    </div>
-  );
-}
-
 export default function App() {
   const [user, setUser] = useState<User | null>(() => {
-    try {
-      const saved = localStorage.getItem("bioritmo_user");
-      return saved ? JSON.parse(saved) : null;
-    } catch {
-      return null;
-    }
+    const saved = localStorage.getItem("bioritmo_user");
+    return saved ? JSON.parse(saved) : null;
   });
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Simular verificação de autenticação
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, []);
+  const [loading, setLoading] = useState(false);
 
   const login = (userData: User) => {
     setUser(userData);
@@ -76,7 +53,11 @@ export default function App() {
   };
 
   if (loading) {
-    return <PageLoader />;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sky-600"></div>
+      </div>
+    );
   }
 
   return (
