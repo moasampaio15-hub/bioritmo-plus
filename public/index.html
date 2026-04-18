@@ -5,99 +5,311 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#6366F1">
     <title>BIORITMO+</title>
+    <meta name="description" content="Transforme seus hábitos em saúde. O único app validado por médicos.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="/css/bioritmo-mobile.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="/css/bioritmo-v2.css">
 </head>
 <body>
     <div id="app">
-        <!-- TELA DE LOGIN -->
-        <div id="auth-screen" class="screen">
-            <div class="app-content">
-                <div class="text-center mb-2" style="padding:2rem 0;">
-                    <div style="width:64px;height:64px;background:linear-gradient(135deg,#6366F1,#8B5CF6);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;color:white;font-size:1.75rem;"><i class="fas fa-heartbeat"></i></div>
-                    <h1 style="font-size:1.5rem;font-weight:700;">BIORITMO+</h1>
-                    <p style="color:var(--text-secondary);font-size:0.875rem;">by Sampaio Diagnóstico</p>
+        <!-- ============================================
+             ONBOARDING
+             ============================================ -->
+        <div id="onboarding-screen" class="screen active">
+            <div class="onboarding-container">
+                <!-- Slide 1 -->
+                <div class="onboarding-slide active" data-slide="1">
+                    <div class="onboarding-visual">
+                        <div class="onboarding-icon"><i class="fas fa-heartbeat"></i></div>
+                    </div>
+                    <h1 class="onboarding-title">Seu corpo fala.<br>Nós traduzimos.</h1>
+                    <p class="onboarding-text">Transforme sono, energia e hábitos em inteligência pessoal para uma vida mais equilibrada.</p>
                 </div>
                 
-                <div class="card">
-                    <form id="login-form">
-                        <input type="email" id="login-email" placeholder="Email" required>
-                        <input type="password" id="login-senha" placeholder="Senha" required>
-                        <button type="submit" class="btn">Entrar</button>
-                    </form>
-                    <hr style="border:none;border-top:1px solid var(--border);margin:1.5rem 0;">
-                    <form id="register-form">
-                        <input type="text" id="reg-nome" placeholder="Nome completo" required>
-                        <input type="email" id="reg-email" placeholder="Email" required>
-                        <input type="password" id="reg-senha" placeholder="Senha" required>
-                        <button type="submit" class="btn" style="background:var(--success);">Criar conta</button>
-                    </form>
+                <!-- Slide 2 -->
+                <div class="onboarding-slide" data-slide="2">
+                    <div class="onboarding-visual">
+                        <div class="onboarding-icon"><i class="fas fa-chart-line"></i></div>
+                    </div>
+                    <h1 class="onboarding-title">Dados simples.<br>Insights poderosos.</h1>
+                    <p class="onboarding-text">Nossa tecnologia identifica padrões no seu corpo que você nunca percebeu sozinho.</p>
                 </div>
+                
+                <!-- Slide 3 -->
+                <div class="onboarding-slide" data-slide="3">
+                    <div class="onboarding-visual">
+                        <div class="onboarding-icon"><i class="fas fa-check-circle"></i></div>
+                    </div>
+                    <h1 class="onboarding-title">Pequenos hábitos.<br>Grandes mudanças.</h1>
+                    <p class="onboarding-text">Descubra como pequenas alterações na rotina transformam sua saúde e bem-estar.</p>
+                </div>
+                
+                <!-- Dots -->
+                <div class="onboarding-dots">
+                    <span class="dot active" data-slide="1"></span>
+                    <span class="dot" data-slide="2"></span>
+                    <span class="dot" data-slide="3"></span>
+                </div>
+                
+                <!-- Button -->
+                <button class="btn btn-primary btn-large" id="btn-onboarding-next">
+                    <span>Continuar</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
             </div>
         </div>
-        
-        <!-- TELA PRINCIPAL -->
+
+        <!-- ============================================
+             AUTH SCREEN
+             ============================================ -->
+        <div id="auth-screen" class="screen">
+            <div class="auth-container">
+                <!-- Header -->
+                <div class="auth-header">
+                    <div class="logo-container">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <h1 class="auth-title">BIORITMO+</h1>
+                    <p class="auth-subtitle">by Sampaio Diagnóstico</p>
+                </div>
+                
+                <!-- Tabs -->
+                <div class="auth-tabs">
+                    <button class="auth-tab active" data-tab="login">Entrar</button>
+                    <button class="auth-tab" data-tab="register">Criar conta</button>
+                </div>
+                
+                <!-- Login Form -->
+                <form id="login-form" class="auth-form active">
+                    <div class="input-group">
+                        <input type="email" id="login-email" placeholder="Email" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="login-senha" placeholder="Senha" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-large">
+                        <span>Entrar</span>
+                    </button>
+                </form>
+                
+                <!-- Register Form -->
+                <form id="register-form" class="auth-form">
+                    <div class="input-group">
+                        <input type="text" id="reg-nome" placeholder="Nome completo" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="email" id="reg-email" placeholder="Email" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="reg-senha" placeholder="Senha" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-large">
+                        <span>Criar conta</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- ============================================
+             MAIN APP
+             ============================================ -->
         <div id="main-screen" class="screen">
+            <!-- Header -->
             <div class="app-header">
-                <h1>BIORITMO+</h1>
-                <button onclick="logout()" style="background:none;border:none;color:var(--text-secondary);"><i class="fas fa-sign-out-alt"></i></button>
+                <div class="header-greeting">
+                    <span id="greeting-text">Bom dia,</span>
+                    <h2 id="user-name">Dr. Moacir</h2>
+                </div>
+                <button onclick="logout()" style="background:none;border:none;color:var(--gray-400);font-size:1.25rem;padding:0.5rem;">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
             </div>
             
+            <!-- Content -->
             <div class="app-content" id="main-content">
-                <!-- HOME -->
+                <!-- PAGE: HOME -->
                 <div id="page-home">
-                    <div id="home-content"></div>
+                    <!-- Score Card -->
+                    <div class="card score-card">
+                        <div class="score-value" id="score-value">--</div>
+                        <div class="score-label">Seu Score de Saúde</div>
+                        <div id="streak-container" style="margin-top:0.75rem;"></div>
+                    </div>
+                    
+                    <!-- Insight -->
+                    <div id="insight-container"></div>
+                    
+                    <!-- Quick Actions -->
+                    <div class="quick-actions">
+                        <div class="quick-action" onclick="navigateTo('checkin')">
+                            <div class="quick-action-icon"><i class="fas fa-plus"></i></div>
+                            <span>Novo Check-in</span>
+                        </div>
+                        <div class="quick-action" onclick="navigateTo('dashboard')">
+                            <div class="quick-action-icon"><i class="fas fa-chart-line"></i></div>
+                            <span>Meu Dashboard</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Summary -->
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Resumo</span>
+                        </div>
+                        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;">
+                            <div class="text-center" style="padding:1rem;background:var(--gray-50);border-radius:var(--radius);">
+                                <div style="font-size:1.75rem;font-weight:700;color:var(--primary);" id="checkins-semana">0</div>
+                                <div style="font-size:0.75rem;color:var(--gray-500);">Esta semana</div>
+                            </div>
+                            <div class="text-center" style="padding:1rem;background:var(--gray-50);border-radius:var(--radius);">
+                                <div style="font-size:1.75rem;font-weight:700;color:var(--success);" id="checkins-hoje">0</div>
+                                <div style="font-size:0.75rem;color:var(--gray-500);">Hoje</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
-                <!-- CHECKIN -->
+                <!-- PAGE: CHECKIN -->
                 <div id="page-checkin" class="hidden">
-                    <div id="checkin-content"></div>
+                    <div class="card">
+                        <div class="card-title">Como você está?</div>
+                        
+                        <!-- Humor -->
+                        <div class="slider-group">
+                            <div class="slider-header">
+                                <span class="slider-label"><i class="fas fa-smile"></i> Humor</span>
+                                <span class="slider-value" id="val-humor">5</span>
+                            </div>
+                            <div class="slider-icons">
+                                <i class="fas fa-sad-tear"></i>
+                                <i class="fas fa-meh"></i>
+                                <i class="fas fa-smile"></i>
+                            </div>
+                            <input type="range" id="humor" min="1" max="10" value="5" oninput="updateSlider('humor', this.value)">
+                        </div>
+                        
+                        <!-- Energia -->
+                        <div class="slider-group">
+                            <div class="slider-header">
+                                <span class="slider-label"><i class="fas fa-bolt"></i> Energia</span>
+                                <span class="slider-value" id="val-energia">5</span>
+                            </div>
+                            <div class="slider-icons">
+                                <i class="fas fa-battery-quarter"></i>
+                                <i class="fas fa-battery-half"></i>
+                                <i class="fas fa-battery-full"></i>
+                            </div>
+                            <input type="range" id="energia" min="1" max="10" value="5" oninput="updateSlider('energia', this.value)">
+                        </div>
+                        
+                        <!-- Sono -->
+                        <div class="slider-group">
+                            <div class="slider-header">
+                                <span class="slider-label"><i class="fas fa-bed"></i> Qualidade do sono</span>
+                                <span class="slider-value" id="val-sono">5</span>
+                            </div>
+                            <div class="slider-icons">
+                                <i class="fas fa-tired"></i>
+                                <i class="fas fa-bed"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <input type="range" id="sono" min="1" max="10" value="5" oninput="updateSlider('sono', this.value)">
+                        </div>
+                        
+                        <!-- Horas -->
+                        <div class="slider-group">
+                            <div class="slider-header">
+                                <span class="slider-label"><i class="fas fa-moon"></i> Horas de sono</span>
+                                <span class="slider-value" id="val-horas">7h</span>
+                            </div>
+                            <input type="range" id="horas" min="0" max="12" step="0.5" value="7" oninput="document.getElementById('val-horas').textContent=this.value+'h'" style="background:linear-gradient(to right,#6366F1,#8B5CF6);">
+                        </div>
+                    </div>
+                    
+                    <!-- Hábitos -->
+                    <div class="card">
+                        <div class="card-title">Hábitos de hoje</div>
+                        <div class="habits-grid">
+                            <button type="button" class="habit-btn" id="habit-agua" onclick="toggleHabit(this)">
+                                <i class="fas fa-tint"></i>
+                                <span>Água</span>
+                            </button>
+                            <button type="button" class="habit-btn" id="habit-exercicio" onclick="toggleHabit(this)">
+                                <i class="fas fa-running"></i>
+                                <span>Exercício</span>
+                            </button>
+                            <button type="button" class="habit-btn" id="habit-alimentacao" onclick="toggleHabit(this)">
+                                <i class="fas fa-carrot"></i>
+                                <span>Alimentação</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Notas -->
+                    <div class="card">
+                        <div class="card-title">Observações (opcional)</div>
+                        <textarea id="notas" rows="3" placeholder="Como foi seu dia?"></textarea>
+                    </div>
+                    
+                    <button class="btn btn-primary btn-large" onclick="salvarCheckin()">
+                        <i class="fas fa-check"></i> Salvar Check-in
+                    </button>
                 </div>
                 
-                <!-- DASHBOARD -->
+                <!-- PAGE: DASHBOARD -->
                 <div id="page-dashboard" class="hidden">
-                    <div id="dashboard-content"></div>
+                    <div class="card">
+                        <div class="card-title">Sua evolução</div>
+                        <canvas id="chart-evolucao" style="max-height:200px;margin-top:1rem;"></canvas>
+                    </div>
+                    
+                    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:0.75rem;">
+                        <div class="card text-center">
+                            <div style="font-size:2rem;font-weight:700;color:var(--primary);" id="dash-media">--</div>
+                            <div style="font-size:0.875rem;color:var(--gray-500);">Média 7 dias</div>
+                        </div>
+                        <div class="card text-center">
+                            <div style="font-size:2rem;font-weight:700;color:var(--success);" id="dash-streak">--</div>
+                            <div style="font-size:0.875rem;color:var(--gray-500);">Dias seguidos</div>
+                        </div>
+                    </div>
+                    
+                    <div id="correlations-container"></div>
                 </div>
             </div>
             
+            <!-- Bottom Navigation -->
             <div class="bottom-nav">
-                <button class="nav-item active" data-page="home" onclick="showPage('home')">
-                    <i class="fas fa-home"></i>Início
+                <button class="nav-item active" data-page="home" onclick="navigateTo('home')">
+                    <i class="fas fa-home"></i>
+                    <span>Início</span>
                 </button>
-                <button class="nav-item" data-page="checkin" onclick="showPage('checkin')">
-                    <i class="fas fa-plus-circle"></i>Check-in
+                <button class="nav-item" data-page="checkin" onclick="navigateTo('checkin')">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Check-in</span>
                 </button>
-                <button class="nav-item" data-page="dashboard" onclick="showPage('dashboard')">
-                    <i class="fas fa-chart-line"></i>Gráficos
+                <button class="nav-item" data-page="dashboard" onclick="navigateTo('dashboard')">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Gráficos</span>
                 </button>
             </div>
         </div>
     </div>
     
-    <script src="/js/bioritmo-mobile.js"></script>
-    <script>
-        function showPage(page) {
-            // Esconder todas as páginas
-            document.getElementById('page-home').classList.add('hidden');
-            document.getElementById('page-checkin').classList.add('hidden');
-            document.getElementById('page-dashboard').classList.add('hidden');
-            
-            // Mostrar página selecionada
-            document.getElementById('page-' + page).classList.remove('hidden');
-            
-            // Atualizar nav
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.querySelector('[data-page="' + page + '"]').classList.add('active');
-            
-            // Carregar conteúdo
-            if (page === 'home') loadHome();
-            if (page === 'checkin') loadCheckin();
-            if (page === 'dashboard') loadDashboard();
-            
-            // Scroll topo
-            document.querySelector('.app-content').scrollTop = 0;
-        }
-    </script>
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+    
+    <!-- Scripts -->
+    <script src="/js/bioritmo-v2.js"></script>
 </body>
 </html>
