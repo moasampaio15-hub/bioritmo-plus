@@ -19,10 +19,10 @@ export default defineConfig(({mode}) => {
       outDir: 'dist',
       sourcemap: false,
       rollupOptions: {
+        external: ['react-is'],
         output: {
           manualChunks: {
             vendor: ['react', 'react-dom', 'react-router-dom'],
-            charts: ['recharts'],
             motion: ['motion'],
           },
         },
