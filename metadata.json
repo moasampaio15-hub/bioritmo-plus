@@ -1,0 +1,8 @@
+{
+  "name": "Bioritmo+",
+  "description": "Uma plataforma inteligente para monitorar e otimizar seu bem-estar diário, energia e saúde através de biorritmos.",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "majorCapabilities": []
+}
