@@ -229,7 +229,7 @@ async function loadHome() {
   const pacienteId = state.user?.pacienteId;
   
   if (!pacienteId) {
-    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">👋</div><h3 class="empty-state-title">Bem-vindo!</h3><p class="empty-state-text">Complete seu perfil para começar.</p></div>';
+    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon"><i class="fas fa-hand-wave"></i></div><h3 class="empty-state-title">Bem-vindo!</h3><p class="empty-state-text">Complete seu perfil para começar.</p></div>';
     return;
   }
   
@@ -255,7 +255,7 @@ async function loadHome() {
         <div class="score-label">Seu Score de Saúde</div>
         ${dashboardData?.streakDias > 0 ? `
           <div style="margin-top: 1rem;">
-            <span class="streak-badge">🔥 ${dashboardData.streakDias} dias seguidos</span>
+            <span class="streak-badge"><i class="fas fa-fire"></i> ${dashboardData.streakDias} dias seguidos</span>
           </div>
         ` : ''}
       </div>
@@ -263,20 +263,19 @@ async function loadHome() {
       <!-- Quick Insight -->
       ${scoreData ? `
         <div class="insight-card">
-          <span style="color: var(--gray-700);">
-            ${getInsightMessage(scoreData, dashboardData)}
-          </span>
+          <i class="fas fa-lightbulb"></i>
+          <span>${getInsightMessage(scoreData, dashboardData)}</span>
         </div>
       ` : ''}
       
       <!-- Quick Actions -->
       <div class="quick-actions">
         <div class="quick-action" onclick="document.querySelector('[data-page=\"checkin\"]').click()">
-          <div class="quick-action-icon">📝</div>
+          <div class="quick-action-icon"><i class="fas fa-edit"></i></div>
           <span>Novo Check-in</span>
         </div>
         <div class="quick-action" onclick="document.querySelector('[data-page=\"dashboard\"]').click()">
-          <div class="quick-action-icon">📊</div>
+          <div class="quick-action-icon"><i class="fas fa-chart-line"></i></div>
           <span>Meu Dashboard</span>
         </div>
       </div>
