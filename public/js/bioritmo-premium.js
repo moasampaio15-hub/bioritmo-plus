@@ -322,7 +322,11 @@ function loadCheckin() {
   const container = document.getElementById('content-area');
   
   // Evitar recriação se já existe
-  if (container.dataset.checkinLoaded === 'true') return;
+  if (container.dataset.checkinLoaded === 'true') {
+    // Scroll para o topo
+    document.querySelector('.screen').scrollTop = 0;
+    return;
+  }
   container.dataset.checkinLoaded = 'true';
   
   container.innerHTML = `

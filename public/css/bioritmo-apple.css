@@ -80,6 +80,8 @@ body {
   background: var(--ios-bg);
   opacity: 1;
   transition: opacity 0.3s ease;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .screen.hidden {
@@ -373,10 +375,8 @@ body {
 }
 
 .app-content {
-  padding: 5rem 1rem 10rem;
+  padding: 5rem 1rem 12rem;
   min-height: 100vh;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
 }
 
 /* ============================================
