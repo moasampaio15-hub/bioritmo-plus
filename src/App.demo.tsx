@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { User } from "./types";
-import { demoAuth } from "./lib/demoAuth";
+import { api } from "./lib/api.demo";
 import { ThemeProvider } from "./context/ThemeContext";
 import { ToastProvider } from "./context/ToastContext";
 import { PWAInstallBanner, OfflineIndicator, NotificationPrompt } from "./components/PWAInstall";
@@ -47,34 +47,28 @@ export default function AppDemo() {
   const [showOnboarding, setShowOnboarding] = useState(false);
 
   useEffect(() => {
-    // Garantir que usuário demo existe
-    try {
-      demoAuth.createDemoUser();
-      
-      // Verificar se usuário já está logado
-      const currentUser = demoAuth.getCurrentUser();
-      if (currentUser) {
-        setUser(currentUser);
-      }
-      
-      // Verificar se é primeira visita
-      const hasSeenOnboarding = localStorage.getItem('bioritmo_onboarding_complete');
-      if (!hasSeenOnboarding && !currentUser) {
-        setShowOnboarding(true);
-      }
-    } catch (error) {
-      console.error('Erro ao inicializar demo:', error);
+    // Verificar se usuário já está logado
+    const savedUser = localStorage.getItem('bioritmo_current_user');
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
+    }
+    
+    // Verificar se é primeira visita
+    const hasSeenOnboarding = localStorage.getItem('bioritmo_onboarding_complete');
+    if (!hasSeenOnboarding && !savedUser) {
+      setShowOnboarding(true);
     }
     
     setLoading(false);
   }, []);
 
   const login = (userData: User) => {
+    localStorage.setItem('bioritmo_current_user', JSON.stringify(userData));
     setUser(userData);
   };
 
   const logout = () => {
-    demoAuth.logout();
+    localStorage.removeItem('bioritmo_current_user');
     setUser(null);
   };
 
