@@ -202,14 +202,15 @@ function logout() {
 // ============================================
 
 async function loadHome() {
+  // Verificar se elementos existem
+  if (!$('score-value')) return;
+  
   if (!state.user?.pacienteId) {
-    $('page-home').innerHTML = `
-      <div class="empty-state">
-        <div class="empty-state-icon"><i class="fas fa-hand-wave"></i></div>
-        <h3 class="empty-state-title">Bem-vindo!</h3>
-        <p class="empty-state-text">Complete seu cadastro para começar.</p>
-      </div>
-    `;
+    $('score-value').textContent = '--';
+    $('checkins-semana').textContent = '0';
+    $('checkins-hoje').textContent = '0';
+    $('streak-container').innerHTML = '';
+    $('insight-container').innerHTML = '';
     return;
   }
   
@@ -229,19 +230,22 @@ async function loadHome() {
     const semana = dashRes?.data?.statsSemana?.totalCheckins || 0;
     const hoje = dashRes?.data?.checkinsHoje?.length || 0;
     
-    $('score-value').textContent = score;
-    $('checkins-semana').textContent = semana;
-    $('checkins-hoje').textContent = hoje;
+    // Atualizar apenas se elementos existirem
+    if ($('score-value')) $('score-value').textContent = score;
+    if ($('checkins-semana')) $('checkins-semana').textContent = semana;
+    if ($('checkins-hoje')) $('checkins-hoje').textContent = hoje;
     
     // Streak
-    if (streak > 0) {
-      $('streak-container').innerHTML = `<span class="streak-badge"><i class="fas fa-fire"></i> ${streak} dias seguidos</span>`;
-    } else {
-      $('streak-container').innerHTML = '';
+    if ($('streak-container')) {
+      if (streak > 0) {
+        $('streak-container').innerHTML = `<span class="streak-badge"><i class="fas fa-fire"></i> ${streak} dias seguidos</span>`;
+      } else {
+        $('streak-container').innerHTML = '';
+      }
     }
     
     // Insight
-    if (scoreRes?.data) {
+    if (scoreRes?.data && $('insight-container')) {
       const msg = getInsightMessage(scoreRes.data, dashRes?.data);
       $('insight-container').innerHTML = `
         <div class="insight-card">
@@ -252,6 +256,7 @@ async function loadHome() {
     }
   } catch (err) {
     console.error('Erro ao carregar home:', err);
+    // Não travar o app em caso de erro
   }
 }
 

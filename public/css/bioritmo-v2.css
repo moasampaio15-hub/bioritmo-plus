@@ -5,11 +5,11 @@
  */
 
 :root {
-  /* Cores Primárias */
-  --primary: #6366F1;
-  --primary-light: #818CF8;
-  --primary-dark: #4F46E5;
-  --primary-gradient: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+  /* Cores Primárias - Azul suave (Apple-style) */
+  --primary: #3B82F6;
+  --primary-light: #60A5FA;
+  --primary-dark: #2563EB;
+  --primary-gradient: linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%);
   
   /* Cores de Status */
   --success: #10B981;
