@@ -128,28 +128,35 @@ export default function CheckInPage() {
   }, [user]);
 
   const handleSubmit = async () => {
-    if (!user) return;
+    if (!user) {
+      showToast("Erro: usuário não logado", "error");
+      return;
+    }
+    
     setLoading(true);
+    console.log("Iniciando submit...", formData);
 
     try {
-      const recent = await api.getCheckIns(user.id);
+      // Simplificar - não buscar checkins anteriores para evitar delay
       const health_score = calculateHealthScore(formData);
-      const burnout_score = calculateBurnoutScore([formData as CheckIn, ...recent]);
-
+      
       const payload: CheckIn = {
         ...(formData as CheckIn),
         user_id: user.id,
         date: new Date().toISOString().split('T')[0],
         health_score,
-        burnout_score,
+        burnout_score: 0, // Simplificado
       };
 
+      console.log("Enviando payload:", payload);
       await api.saveCheckIn(payload);
+      console.log("Check-in salvo!");
+      
       showToast("Check-in realizado com sucesso!", "success");
       navigate("/");
-    } catch (err) {
-      console.error(err);
-      showToast("Erro ao salvar check-in.", "error");
+    } catch (err: any) {
+      console.error("Erro no submit:", err);
+      showToast(err.message || "Erro ao salvar check-in. Tente novamente.", "error");
     } finally {
       setLoading(false);
     }
