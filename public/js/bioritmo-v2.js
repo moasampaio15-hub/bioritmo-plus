@@ -90,6 +90,8 @@ function navigateTo(page) {
 
 function initOnboarding() {
   const btn = $('btn-onboarding-next');
+  if (!btn) return; // Elemento não existe
+  
   const dots = document.querySelectorAll('.dot');
   const slides = document.querySelectorAll('.onboarding-slide');
   
@@ -109,7 +111,9 @@ function initOnboarding() {
       }
     } else {
       // Ir para auth
+      localStorage.setItem('bioritmo_onboarding', 'true');
       showScreen('auth-screen');
+      initAuth();
     }
   });
 }
@@ -119,6 +123,9 @@ function initOnboarding() {
 // ============================================
 
 function initAuth() {
+  // Verificar se estamos na tela de auth
+  if (!$('auth-screen') || $('auth-screen').classList.contains('hidden')) return;
+  
   // Tabs
   document.querySelectorAll('.auth-tab').forEach(tab => {
     tab.addEventListener('click', () => {
@@ -434,24 +441,26 @@ async function loadDashboard() {
 // ============================================
 
 document.addEventListener('DOMContentLoaded', () => {
-  initOnboarding();
-  initAuth();
-  
-  // Verificar se já fez onboarding
-  const onboardingDone = localStorage.getItem('bioritmo_onboarding');
-  
-  if (state.token && state.user) {
-    showScreen('main-screen');
-    loadHome();
-  } else if (onboardingDone) {
+  try {
+    // Verificar se já fez onboarding
+    const onboardingDone = localStorage.getItem('bioritmo_onboarding');
+    
+    if (state.token && state.user) {
+      // Usuário logado - ir direto para app
+      showScreen('main-screen');
+      setTimeout(loadHome, 100);
+    } else if (onboardingDone) {
+      // Já fez onboarding - mostrar login
+      showScreen('auth-screen');
+      initAuth();
+    } else {
+      // Primeira vez - mostrar onboarding
+      showScreen('onboarding-screen');
+      initOnboarding();
+    }
+  } catch (err) {
+    console.error('Erro na inicialização:', err);
+    // Fallback: mostrar tela de login
     showScreen('auth-screen');
   }
-  // Senão, fica no onboarding (tela inicial)
-  
-  // Marcar onboarding como feito quando clicar em "Começar"
-  $('btn-onboarding-next').addEventListener('click', () => {
-    if (state.onboardingStep === 3) {
-      localStorage.setItem('bioritmo_onboarding', 'true');
-    }
-  });
 });
