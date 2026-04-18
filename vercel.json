@@ -1,42 +1,20 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "api/**/*.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
-    }
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "framework": "vite",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
   ],
-  "routes": [
+  "headers": [
     {
-      "src": "/api/auth/signup",
-      "dest": "/api/auth/signup.js"
-    },
-    {
-      "src": "/api/auth/login",
-      "dest": "/api/auth/login.js"
-    },
-    {
-      "src": "/api/checkins",
-      "dest": "/api/checkins/index.js"
-    },
-    {
-      "src": "/api/checkins/today",
-      "dest": "/api/checkins/today.js"
-    },
-    {
-      "src": "/[^.]+",
-      "dest": "/dist/index.html"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/dist/$1"
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
     }
   ]
 }
