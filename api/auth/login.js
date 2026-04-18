@@ -1,11 +1,6 @@
 import { createClient } from '@libsql/client';
 import crypto from 'crypto';
 
-const db = createClient({
-  url: process.env.TURSO_DATABASE_URL,
-  authToken: process.env.TURSO_AUTH_TOKEN,
-});
-
 function hashPassword(password) {
   return crypto.createHash('sha256').update(password).digest('hex');
 }
@@ -14,6 +9,15 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
+
+  if (!process.env.TURSO_DATABASE_URL || !process.env.TURSO_AUTH_TOKEN) {
+    return res.status(500).json({ error: 'Configuração do banco de dados incompleta' });
+  }
+
+  const db = createClient({
+    url: process.env.TURSO_DATABASE_URL,
+    authToken: process.env.TURSO_AUTH_TOKEN,
+  });
 
   const { email, password } = req.body;
   const hashedPassword = hashPassword(password);
@@ -30,6 +34,7 @@ export default async function handler(req, res) {
       res.status(401).json({ error: 'Email ou senha incorretos.' });
     }
   } catch (e) {
+    console.error('Erro no login:', e);
     res.status(500).json({ error: 'Erro no login.' });
   }
 }
