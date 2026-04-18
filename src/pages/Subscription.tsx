@@ -1,150 +1,233 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../App";
-import { api } from "../lib/api";
-import { motion } from "motion/react";
-import { Check, Crown, Zap, ShieldCheck, Sparkles, ArrowLeft } from "lucide-react";
-import { clsx } from "clsx";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Check, Crown, Sparkles, Zap, Brain, Heart, Star } from 'lucide-react';
+import { motion } from 'motion/react';
+import { useAuth } from '../App';
+import { useToast } from '../context/ToastContext';
+import { FadeIn, ScaleOnHover } from '../components/PremiumAnimations';
 
 export default function Subscription() {
-  const { user, login } = useAuth();
+  const { user } = useAuth();
+  const { showToast } = useToast();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState<"monthly" | "yearly">("yearly");
+  const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'yearly'>('yearly');
 
-  const handleUpgrade = async () => {
+  const plans = {
+    monthly: {
+      price: 29.90,
+      period: 'mês',
+      discount: 0,
+      popular: false
+    },
+    yearly: {
+      price: 19.90,
+      period: 'mês',
+      discount: 33,
+      popular: true
+    }
+  };
+
+  const features = [
+    { icon: Brain, text: 'Insights avançados de IA' },
+    { icon: Heart, text: 'Relatórios médicos ilimitados' },
+    { icon: Zap, text: 'Análises em tempo real' },
+    { icon: Star, text: 'Todas as conquistas e badges' },
+    { icon: Sparkles, text: 'Exportação de dados' },
+    { icon: Crown, text: 'Suporte prioritário' }
+  ];
+
+  const handleSubscribe = async () => {
     if (!user) {
-      console.error("Usuário não encontrado");
+      showToast('Faça login para assinar', 'error');
+      navigate('/login');
       return;
     }
-    setLoading(true);
-    console.log("Iniciando checkout para plano:", selectedPlan);
-    try {
-      const response = await fetch("/api/create-checkout-session", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          userId: user.id,
-          planType: selectedPlan
-        }),
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Erro na requisição");
-      }
 
-      const { url } = await response.json();
-      if (!url) throw new Error("URL de checkout não recebida");
-      
-      console.log("Redirecionando para:", url);
-      window.location.href = url;
-    } catch (err: any) {
-      console.error("Erro no checkout:", err);
-      alert("Erro ao processar assinatura: " + err.message);
-    } finally {
+    setLoading(true);
+
+    try {
+      const response = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user.id,
+          planType: selectedPlan,
+          email: user.email
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error('Erro ao criar sessão de pagamento');
+      }
+    } catch (error) {
+      showToast('Erro ao processar pagamento', 'error');
       setLoading(false);
     }
   };
 
-  const PlanCard = ({ type, price, period, features, recommended, savings }: any) => (
-    <motion.div 
-      whileHover={{ y: -5 }}
-      onClick={() => setSelectedPlan(type)}
-      className={clsx(
-        "relative p-6 rounded-[2.5rem] border-2 transition-all cursor-pointer overflow-hidden flex flex-col h-full",
-        selectedPlan === type 
-          ? "border-sky-500 bg-white shadow-2xl shadow-sky-900/10 ring-4 ring-sky-500/5" 
-          : "border-slate-100 bg-white/50 hover:border-slate-200"
-      )}
-    >
-      {recommended && (
-        <div className="absolute top-0 right-0 bg-sky-600 text-white text-[9px] font-black px-4 py-1.5 rounded-bl-2xl uppercase tracking-widest">
-          Mais Popular
-        </div>
-      )}
-      <div className="flex justify-between items-start mb-4">
-        <div>
-          <h3 className="font-bold text-slate-900 capitalize text-lg">{type === 'monthly' ? 'Mensal' : 'Anual'}</h3>
-          <div className="flex items-baseline gap-1 mt-1">
-            <span className="text-3xl font-black text-slate-900">R$ {price}</span>
-            <span className="text-xs text-slate-400 font-medium">/{period}</span>
-          </div>
-          {savings && (
-            <p className="text-[10px] text-emerald-600 font-bold mt-1 uppercase tracking-wider">{savings}</p>
-          )}
-        </div>
-        <div className={clsx(
-          "w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors shrink-0",
-          selectedPlan === type ? "border-sky-500 bg-sky-500" : "border-slate-200"
-        )}>
-          {selectedPlan === type && <Check className="w-4 h-4 text-white" />}
-        </div>
-      </div>
-      <ul className="space-y-3 mt-auto">
-        {features.map((f: string, i: number) => (
-          <li key={i} className="flex items-center gap-3 text-[11px] text-slate-600 font-medium">
-            <Check className="w-3.5 h-3.5 text-sky-500 shrink-0" />
-            {f}
-          </li>
-        ))}
-      </ul>
-    </motion.div>
-  );
-
   return (
-    <div className="space-y-8 pb-12">
-      <header className="flex items-center gap-4">
-        <button onClick={() => navigate(-1)} className="p-3 bg-white rounded-2xl border border-slate-100 shadow-sm text-slate-500 hover:text-slate-900 transition-colors">
-          <ArrowLeft className="w-5 h-5" />
-        </button>
-        <div>
-          <h2 className="text-2xl font-black text-display text-slate-900 tracking-tight">Bioritmo<span className="text-sky-600">+</span> Premium</h2>
-          <p className="text-slate-500 text-sm font-medium">Escolha o plano ideal para você.</p>
-        </div>
-      </header>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <PlanCard 
-          type="monthly" 
-          price="29,90" 
-          period="mês" 
-          features={["Insights de IA ilimitados", "Relatórios semanais", "Suporte prioritário", "Alertas de Burnout"]} 
-        />
-        <PlanCard 
-          type="yearly" 
-          price="19,90" 
-          period="mês" 
-          recommended 
-          savings="Economize 33%"
-          features={["Tudo do plano Mensal", "Acesso antecipado a funções", "Selo exclusivo no perfil", "Melhor custo-benefício"]} 
-        />
-      </div>
-
-      <div className="space-y-6">
-        <button
-          onClick={handleUpgrade}
-          disabled={loading}
-          className="w-full py-6 bg-slate-900 text-white font-black text-sm rounded-[2.5rem] shadow-2xl shadow-slate-900/20 hover:bg-slate-800 active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-3"
-        >
-          {loading ? (
-            <>
-              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              <span>Processando...</span>
-            </>
-          ) : (
-            `Assinar Plano ${selectedPlan === 'monthly' ? 'Mensal' : 'Anual'} — R$ ${selectedPlan === 'monthly' ? '29,90' : '238,80'}`
-          )}
-        </button>
-        <div className="flex flex-col items-center gap-2">
-          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em]">
-            Cancele a qualquer momento • Pagamento Seguro
-          </p>
-          <div className="flex gap-4 opacity-30 grayscale">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" className="h-4" />
-            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" className="h-4" />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-sky-50 py-12 px-4">
+      <div className="max-w-4xl mx-auto">
+        <FadeIn>
+          {/* Header */}
+          <div className="text-center mb-12">
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: 'spring', stiffness: 200 }}
+              className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-gradient-to-br from-amber-400 to-orange-500 mb-6 shadow-xl"
+            >
+              <Crown className="w-10 h-10 text-white" />
+            </motion.div>
+            <h1 className="text-4xl font-black text-slate-900 mb-4">
+              BIORITMO+ Premium
+            </h1>
+            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+              Desbloqueie todo o potencial do seu bem-estar com recursos exclusivos 
+              e insights avançados de IA
+            </p>
           </div>
-        </div>
+        </FadeIn>
+
+        {/* Features Grid */}
+        <FadeIn delay={0.1}>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-12">
+            {features.map((feature, index) => {
+              const Icon = feature.icon;
+              return (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 + index * 0.05 }}
+                  className="flex items-center gap-3 p-4 bg-white rounded-2xl shadow-sm"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center">
+                    <Icon className="w-5 h-5 text-white" />
+                  </div>
+                  <span className="font-bold text-slate-700 text-sm">{feature.text}</span>
+                </motion.div>
+              );
+            })}
+          </div>
+        </FadeIn>
+
+        {/* Plan Selection */}
+        <FadeIn delay={0.2}>
+          <div className="grid md:grid-cols-2 gap-6 mb-8">
+            {/* Monthly Plan */}
+            <ScaleOnHover>
+              <div
+                onClick={() => setSelectedPlan('monthly')}
+                className={`p-8 rounded-3xl cursor-pointer transition-all ${
+                  selectedPlan === 'monthly'
+                    ? 'bg-white shadow-2xl ring-2 ring-sky-500'
+                    : 'bg-white/50 shadow-lg hover:bg-white'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-bold text-slate-900">Mensal</h3>
+                  {selectedPlan === 'monthly' && (
+                    <div className="w-6 h-6 rounded-full bg-sky-500 flex items-center justify-center">
+                      <Check className="w-4 h-4 text-white" />
+                    </div>
+                  )}
+                </div>
+                <div className="flex items-baseline gap-1 mb-2">
+                  <span className="text-4xl font-black text-slate-900">
+                    R$ {plans.monthly.price.toFixed(2)}
+                  </span>
+                  <span className="text-slate-500">/{plans.monthly.period}</span>
+                </div>
+                <p className="text-sm text-slate-500">Cancele a qualquer momento</p>
+              </div>
+            </ScaleOnHover>
+
+            {/* Yearly Plan */}
+            <ScaleOnHover>
+              <div
+                onClick={() => setSelectedPlan('yearly')}
+                className={`relative p-8 rounded-3xl cursor-pointer transition-all ${
+                  selectedPlan === 'yearly'
+                    ? 'bg-white shadow-2xl ring-2 ring-amber-500'
+                    : 'bg-white/50 shadow-lg hover:bg-white'
+                }`}
+              >
+                {plans.yearly.popular && (
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-amber-400 to-orange-500 text-white text-sm font-bold rounded-full">
+                    MAIS POPULAR
+                  </div>
+                )}
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-bold text-slate-900">Anual</h3>
+                  {selectedPlan === 'yearly' && (
+                    <div className="w-6 h-6 rounded-full bg-amber-500 flex items-center justify-center">
+                      <Check className="w-4 h-4 text-white" />
+                    </div>
+                  )}
+                </div>
+                <div className="flex items-baseline gap-1 mb-2">
+                  <span className="text-4xl font-black text-slate-900">
+                    R$ {plans.yearly.price.toFixed(2)}
+                  </span>
+                  <span className="text-slate-500">/{plans.yearly.period}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-lg">
+                    ECONOMIZE {plans.yearly.discount}%
+                  </span>
+                  <span className="text-sm text-slate-500">R$ {(plans.monthly.price - plans.yearly.price) * 12} de desconto</span>
+                </div>
+              </div>
+            </ScaleOnHover>
+          </div>
+        </FadeIn>
+
+        {/* CTA Button */}
+        <FadeIn delay={0.3}>
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={handleSubscribe}
+            disabled={loading}
+            className="w-full py-5 bg-gradient-to-r from-sky-500 to-blue-600 text-white font-black text-lg rounded-2xl shadow-xl shadow-sky-500/25 disabled:opacity-50 flex items-center justify-center gap-3"
+          >
+            {loading ? (
+              <>
+                <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                Processando...
+              </>
+            ) : (
+              <>
+                <Crown className="w-6 h-6" />
+                Assinar BIORITMO+ Premium
+              </>
+            )}
+          </motion.button>
+        </FadeIn>
+
+        {/* Trust Badges */}
+        <FadeIn delay={0.4}>
+          <div className="mt-8 flex items-center justify-center gap-6 text-sm text-slate-500">
+            <div className="flex items-center gap-2">
+              <Check className="w-4 h-4 text-emerald-500" />
+              <span>7 dias grátis</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Check className="w-4 h-4 text-emerald-500" />
+              <span>Cancele quando quiser</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Check className="w-4 h-4 text-emerald-500" />
+              <span>Pagamento seguro</span>
+            </div>
+          </div>
+        </FadeIn>
       </div>
     </div>
   );
