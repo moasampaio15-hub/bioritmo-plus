@@ -64,17 +64,29 @@ export const demoAuth = {
 
   // Criar usuário demo para testes
   createDemoUser: () => {
-    const demoUsers = [
-      {
-        id: 1,
-        full_name: 'Dr. Moacir Sampaio',
-        email: 'demo@sampaio.com',
-        password: 'demo123',
-        is_premium: true,
-        created_time: new Date().toISOString()
-      }
-    ];
-    localStorage.setItem(DEMO_USERS_KEY, JSON.stringify(demoUsers));
+    const existingUsers = JSON.parse(localStorage.getItem(DEMO_USERS_KEY) || '[]');
+    
+    // Só cria se não existir
+    if (existingUsers.length === 0) {
+      const demoUsers = [
+        {
+          id: 1,
+          full_name: 'Dr. Moacir Sampaio',
+          email: 'demo@sampaio.com',
+          password: 'demo123',
+          is_premium: true,
+          created_time: new Date().toISOString()
+        }
+      ];
+      localStorage.setItem(DEMO_USERS_KEY, JSON.stringify(demoUsers));
+      console.log('✅ Usuário demo criado: demo@sampaio.com / demo123');
+    }
+  },
+
+  // Verificar se usuário demo existe
+  hasDemoUser: () => {
+    const users = JSON.parse(localStorage.getItem(DEMO_USERS_KEY) || '[]');
+    return users.some((u: DemoUser) => u.email === 'demo@sampaio.com');
   }
 };
 

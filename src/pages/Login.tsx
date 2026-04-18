@@ -94,6 +94,18 @@ export default function Login() {
           </button>
         </form>
 
+        {/* Demo info */}
+        <div className="p-4 bg-sky-50 rounded-2xl border border-sky-200">
+          <p className="text-xs text-sky-800 font-bold mb-1">🎮 Modo Demo Ativo</p>
+          <p className="text-xs text-sky-600">
+            Email: <strong>demo@sampaio.com</strong><br/>
+            Senha: <strong>demo123</strong>
+          </p>
+          <p className="text-xs text-sky-500 mt-2">
+            Ou crie sua própria conta gratuitamente!
+          </p>
+        </div>
+
         <p className="text-center text-sm text-slate-500 font-medium">
           Novo por aqui?{" "}
           <Link to="/signup" className="text-sky-600 font-black hover:underline">

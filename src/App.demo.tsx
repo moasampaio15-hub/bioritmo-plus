@@ -47,19 +47,23 @@ export default function AppDemo() {
   const [showOnboarding, setShowOnboarding] = useState(false);
 
   useEffect(() => {
-    // Criar usuário demo se não existir
-    demoAuth.createDemoUser();
-    
-    // Verificar se usuário já está logado
-    const currentUser = demoAuth.getCurrentUser();
-    if (currentUser) {
-      setUser(currentUser);
-    }
-    
-    // Verificar se é primeira visita
-    const hasSeenOnboarding = localStorage.getItem('bioritmo_onboarding_complete');
-    if (!hasSeenOnboarding && !currentUser) {
-      setShowOnboarding(true);
+    // Garantir que usuário demo existe
+    try {
+      demoAuth.createDemoUser();
+      
+      // Verificar se usuário já está logado
+      const currentUser = demoAuth.getCurrentUser();
+      if (currentUser) {
+        setUser(currentUser);
+      }
+      
+      // Verificar se é primeira visita
+      const hasSeenOnboarding = localStorage.getItem('bioritmo_onboarding_complete');
+      if (!hasSeenOnboarding && !currentUser) {
+        setShowOnboarding(true);
+      }
+    } catch (error) {
+      console.error('Erro ao inicializar demo:', error);
     }
     
     setLoading(false);
