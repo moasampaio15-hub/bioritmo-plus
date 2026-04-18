@@ -324,32 +324,52 @@ async function salvarCheckin() {
     return;
   }
   
+  // Pegar valores dos sliders
+  const humor = $('humor')?.value;
+  const energia = $('energia')?.value;
+  const sono = $('sono')?.value;
+  const horas = $('horas')?.value;
+  const notas = $('notas')?.value || '';
+  
+  if (!humor || !energia || !sono || !horas) {
+    showToast('Preencha todos os campos', 'error');
+    return;
+  }
+  
   const btn = document.querySelector('#page-checkin .btn-primary');
-  btn.innerHTML = '<div class="spinner"></div> Salvando...';
-  btn.disabled = true;
+  if (btn) {
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+    btn.disabled = true;
+  }
   
   try {
+    console.log('Salvando check-in...', { humor, energia, sono, horas, notas });
+    
     // Salvar check-in
     await api('/checkins', {
       method: 'POST',
       body: {
         paciente_id: state.user.pacienteId,
-        humor: parseInt($('humor').value),
-        energia: parseInt($('energia').value),
-        sono: parseInt($('sono').value),
-        horas_sono: parseFloat($('horas').value),
-        notas: $('notas').value
+        humor: parseInt(humor),
+        energia: parseInt(energia),
+        sono: parseInt(sono),
+        horas_sono: parseFloat(horas),
+        notas: notas
       }
     });
     
     // Salvar hábitos
+    const agua = $('habit-agua')?.classList.contains('active') ? 2 : 0.5;
+    const exercicio = $('habit-exercicio')?.classList.contains('active') ? 1 : 0;
+    const alimentacao = $('habit-alimentacao')?.classList.contains('active') ? 5 : 3;
+    
     await api('/checkins/habitos', {
       method: 'POST',
       body: {
         paciente_id: state.user.pacienteId,
-        agua_litros: $('habit-agua').classList.contains('active') ? 2 : 0.5,
-        exercicio: $('habit-exercicio').classList.contains('active') ? 1 : 0,
-        alimentacao_saudavel: $('habit-alimentacao').classList.contains('active') ? 5 : 3
+        agua_litros: agua,
+        exercicio: exercicio,
+        alimentacao_saudavel: alimentacao
       }
     });
     
@@ -357,14 +377,19 @@ async function salvarCheckin() {
     
     setTimeout(() => {
       navigateTo('home');
-      btn.innerHTML = '<i class="fas fa-check"></i> Salvar Check-in';
-      btn.disabled = false;
+      if (btn) {
+        btn.innerHTML = '<i class="fas fa-check"></i> Salvar Check-in';
+        btn.disabled = false;
+      }
     }, 1500);
     
   } catch (err) {
+    console.error('Erro ao salvar:', err);
     showToast(err.message || 'Erro ao salvar', 'error');
-    btn.innerHTML = '<i class="fas fa-check"></i> Salvar Check-in';
-    btn.disabled = false;
+    if (btn) {
+      btn.innerHTML = '<i class="fas fa-check"></i> Salvar Check-in';
+      btn.disabled = false;
+    }
   }
 }
 
