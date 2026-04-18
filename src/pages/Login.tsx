@@ -50,7 +50,21 @@ export default function Login() {
       
       // Buscar usuário
       const users = getUsers();
-      const user = users.find((u: any) => u.email === email && u.password === password);
+      let user = users.find((u: any) => u.email === email && u.password === password);
+      
+      // Se for o email demo e não encontrou, criar automaticamente
+      if (!user && email === 'demo@sampaio.com') {
+        const demoUser = {
+          id: 1,
+          full_name: 'Dr. Moacir Sampaio',
+          email: 'demo@sampaio.com',
+          password: 'demo123',
+          is_premium: true
+        };
+        users.push(demoUser);
+        saveUsers(users);
+        user = demoUser;
+      }
       
       if (!user) {
         throw new Error('Email ou senha incorretos.');
