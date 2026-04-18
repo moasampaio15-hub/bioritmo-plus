@@ -322,6 +322,10 @@ function getInsightMessage(score, dashboard) {
 function loadCheckin() {
   const container = document.getElementById('content-area');
   
+  // Evitar recriação se já existe
+  if (container.dataset.checkinLoaded === 'true') return;
+  container.dataset.checkinLoaded = 'true';
+  
   container.innerHTML = `
     <div class="card" style="margin-bottom: 1rem;">
       <div class="card-header">
@@ -332,11 +336,13 @@ function loadCheckin() {
         <!-- Humor -->
         <div class="slider-container">
           <div class="slider-header">
-            <span class="slider-label">😊 Humor</span>
+            <span class="slider-label"><i class="fas fa-smile" style="color: var(--primary);"></i> Humor</span>
             <span class="slider-value" id="humor-value">5</span>
           </div>
           <div class="slider-emojis">
-            <span>😢</span><span>😐</span><span>😄</span>
+            <i class="fas fa-sad-tear" data-value="1-3"></i>
+            <i class="fas fa-meh" data-value="4-7"></i>
+            <i class="fas fa-grin-beam" data-value="8-10"></i>
           </div>
           <input type="range" id="checkin-humor" min="1" max="10" value="5" required>
         </div>
@@ -344,11 +350,13 @@ function loadCheckin() {
         <!-- Energia -->
         <div class="slider-container">
           <div class="slider-header">
-            <span class="slider-label">⚡ Energia</span>
+            <span class="slider-label"><i class="fas fa-bolt" style="color: var(--warning);"></i> Energia</span>
             <span class="slider-value" id="energia-value">5</span>
           </div>
           <div class="slider-emojis">
-            <span>😫</span><span>😌</span><span>💪</span>
+            <i class="fas fa-battery-empty" data-value="1-3"></i>
+            <i class="fas fa-battery-half" data-value="4-7"></i>
+            <i class="fas fa-battery-full" data-value="8-10"></i>
           </div>
           <input type="range" id="checkin-energia" min="1" max="10" value="5" required>
         </div>
@@ -356,11 +364,13 @@ function loadCheckin() {
         <!-- Sono -->
         <div class="slider-container">
           <div class="slider-header">
-            <span class="slider-label">😴 Qualidade do sono</span>
+            <span class="slider-label"><i class="fas fa-bed" style="color: var(--secondary);"></i> Qualidade do sono</span>
             <span class="slider-value" id="sono-value">5</span>
           </div>
           <div class="slider-emojis">
-            <span>😵</span><span>😴</span><span>✨</span>
+            <i class="fas fa-dizzy" data-value="1-3"></i>
+            <i class="fas fa-tired" data-value="4-7"></i>
+            <i class="fas fa-star" data-value="8-10"></i>
           </div>
           <input type="range" id="checkin-sono" min="1" max="10" value="5" required>
         </div>
@@ -368,7 +378,7 @@ function loadCheckin() {
         <!-- Horas de sono -->
         <div class="slider-container">
           <div class="slider-header">
-            <span class="slider-label">🌙 Horas de sono</span>
+            <span class="slider-label"><i class="fas fa-moon" style="color: var(--accent);"></i> Horas de sono</span>
             <span class="slider-value" id="horas-value" style="background: var(--secondary); color: white; padding: 0.25rem 0.75rem; border-radius: var(--radius-full); font-size: 0.875rem;">7h</span>
           </div>
           <input type="range" id="checkin-horas" min="0" max="12" step="0.5" value="7" style="background: linear-gradient(to right, var(--secondary), var(--accent));">
@@ -377,50 +387,64 @@ function loadCheckin() {
         <!-- Hábitos -->
         <div style="margin-bottom: 1.5rem;">
           <label style="display: block; font-weight: 600; color: var(--gray-700); margin-bottom: 0.75rem;">Hábitos de hoje</label>
-          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem;">
-            <label class="habit-toggle" style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 1rem; border: 2px solid var(--gray-200); border-radius: var(--radius); cursor: pointer; transition: all 0.2s;">
-              <input type="checkbox" id="habit-agua" style="display: none;">
-              <span style="font-size: 1.5rem;">💧</span>
-              <span style="font-size: 0.75rem; font-weight: 600;">Água</span>
-            </label>
-            <label class="habit-toggle" style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 1rem; border: 2px solid var(--gray-200); border-radius: var(--radius); cursor: pointer; transition: all 0.2s;">
-              <input type="checkbox" id="habit-exercicio" style="display: none;">
-              <span style="font-size: 1.5rem;">🏃</span>
-              <span style="font-size: 0.75rem; font-weight: 600;">Exercício</span>
-            </label>
-            <label class="habit-toggle" style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 1rem; border: 2px solid var(--gray-200); border-radius: var(--radius); cursor: pointer; transition: all 0.2s;">
-              <input type="checkbox" id="habit-alimentacao" style="display: none;">
-              <span style="font-size: 1.5rem;">🥗</span>
-              <span style="font-size: 0.75rem; font-weight: 600;">Alimentação</span>
-            </label>
+          <div class="habits-grid">
+            <button type="button" class="habit-toggle" data-habit="agua">
+              <i class="fas fa-tint"></i>
+              <span>Água</span>
+            </button>
+            <button type="button" class="habit-toggle" data-habit="exercicio">
+              <i class="fas fa-running"></i>
+              <span>Exercício</span>
+            </button>
+            <button type="button" class="habit-toggle" data-habit="alimentacao">
+              <i class="fas fa-carrot"></i>
+              <span>Alimentação</span>
+            </button>
           </div>
         </div>
         
         <!-- Notas -->
         <div style="margin-bottom: 1.5rem;">
           <label style="display: block; font-weight: 600; color: var(--gray-700); margin-bottom: 0.5rem;">Observações (opcional)</label>
-          <textarea id="checkin-notas" rows="3" placeholder="Como foi seu dia?" style="width: 100%; padding: 1rem; border: 2px solid var(--gray-200); border-radius: var(--radius); font-family: inherit; resize: none;"></textarea>
+          <textarea id="checkin-notas" rows="3" placeholder="Como foi seu dia?" style="width: 100%; padding: 1rem; border: 2px solid var(--gray-200); border-radius: var(--radius); font-family: inherit; resize: none; transition: border-color var(--transition-fast);"></textarea>
         </div>
         
         <button type="submit" class="btn-primary btn-large" style="width: 100%;">
-          <span>✨ Salvar Check-in</span>
+          <i class="fas fa-check-circle"></i> Salvar Check-in
         </button>
       </form>
     </div>
   `;
   
-  // Slider interactions
-  const setupSlider = (id, valueId, suffix = '') => {
+  // Slider interactions com debounce
+  const setupSlider = (id, valueId, suffix = '', iconSelector = null) => {
     const slider = document.getElementById(id);
     const value = document.getElementById(valueId);
-    slider.addEventListener('input', () => {
-      value.textContent = slider.value + suffix;
-    });
+    
+    const updateValue = () => {
+      const val = parseInt(slider.value);
+      value.textContent = val + suffix;
+      
+      // Atualizar ícones ativos
+      if (iconSelector) {
+        const icons = slider.parentElement.querySelectorAll(iconSelector);
+        icons.forEach(icon => {
+          icon.classList.remove('active');
+          const range = icon.dataset.value?.split('-').map(Number);
+          if (range && val >= range[0] && val <= range[1]) {
+            icon.classList.add('active');
+          }
+        });
+      }
+    };
+    
+    slider.addEventListener('input', updateValue);
+    updateValue(); // Inicializar
   };
   
-  setupSlider('checkin-humor', 'humor-value');
-  setupSlider('checkin-energia', 'energia-value');
-  setupSlider('checkin-sono', 'sono-value');
+  setupSlider('checkin-humor', 'humor-value', '', '.slider-emojis i');
+  setupSlider('checkin-energia', 'energia-value', '', '.slider-emojis i');
+  setupSlider('checkin-sono', 'sono-value', '', '.slider-emojis i');
   
   const horasSlider = document.getElementById('checkin-horas');
   const horasValue = document.getElementById('horas-value');
@@ -428,22 +452,29 @@ function loadCheckin() {
     horasValue.textContent = horasSlider.value + 'h';
   });
   
-  // Habit toggle styling
-  document.querySelectorAll('.habit-toggle').forEach(toggle => {
-    toggle.addEventListener('click', function() {
-      const checkbox = this.querySelector('input');
-      checkbox.checked = !checkbox.checked;
-      this.style.borderColor = checkbox.checked ? 'var(--primary)' : 'var(--gray-200)';
-      this.style.background = checkbox.checked ? 'rgba(124, 58, 237, 0.05)' : 'white';
-    });
+  // Habit toggle - usar event delegation
+  const habitsGrid = document.querySelector('.habits-grid');
+  habitsGrid.addEventListener('click', (e) => {
+    const toggle = e.target.closest('.habit-toggle');
+    if (!toggle) return;
+    
+    toggle.classList.toggle('active');
   });
   
   // Form submit
-  document.getElementById('checkin-form').addEventListener('submit', async (e) => {
+  const form = document.getElementById('checkin-form');
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     const pacienteId = state.user?.pacienteId;
-    if (!pacienteId) return;
+    if (!pacienteId) {
+      showToast('Erro: Usuário não identificado', 'error');
+      return;
+    }
+    
+    const submitBtn = form.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
     
     try {
       // Salvar check-in
@@ -464,21 +495,24 @@ function loadCheckin() {
         method: 'POST',
         body: {
           paciente_id: pacienteId,
-          agua_litros: document.getElementById('habit-agua').checked ? 2 : 0.5,
-          exercicio: document.getElementById('habit-exercicio').checked ? 1 : 0,
-          alimentacao_saudavel: document.getElementById('habit-alimentacao').checked ? 5 : 3
+          agua_litros: document.querySelector('[data-habit="agua"]').classList.contains('active') ? 2 : 0.5,
+          exercicio: document.querySelector('[data-habit="exercicio"]').classList.contains('active') ? 1 : 0,
+          alimentacao_saudavel: document.querySelector('[data-habit="alimentacao"]').classList.contains('active') ? 5 : 3
         }
       });
       
-      showToast('Check-in salvo! 🎉', 'success');
+      showToast('Check-in salvo com sucesso!', 'success');
       
-      // Voltar para home
+      // Reset flag e voltar para home
+      container.dataset.checkinLoaded = 'false';
       setTimeout(() => {
         document.querySelector('[data-page="home"]').click();
       }, 1500);
       
     } catch (err) {
-      showToast(err.message, 'error');
+      showToast(err.message || 'Erro ao salvar check-in', 'error');
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Salvar Check-in';
     }
   });
 }
