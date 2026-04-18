@@ -19,6 +19,7 @@ import Achievements from "./pages/Achievements";
 import WellnessGuide from "./pages/WellnessGuide";
 import Exercises from "./pages/Exercises";
 import { Layout } from "./components/Layout";
+import { PWAInstallBanner, OfflineIndicator, NotificationPrompt } from "./components/PWAInstall";
 
 interface AuthContextType {
   user: User | null;
@@ -65,6 +66,7 @@ export default function App() {
       <ToastProvider>
         <AuthContext.Provider value={{ user, loading, login, logout }}>
           <BrowserRouter>
+            <OfflineIndicator />
             <Routes>
               <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
               <Route path="/signup" element={!user ? <Signup /> : <Navigate to="/" />} />
@@ -87,6 +89,8 @@ export default function App() {
               </Route>
             </Routes>
           </BrowserRouter>
+          <PWAInstallBanner />
+          <NotificationPrompt />
         </AuthContext.Provider>
       </ToastProvider>
     </ThemeProvider>
