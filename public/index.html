@@ -139,13 +139,6 @@
             <div class="app-content" id="main-content">
                 <!-- PAGE: HOME -->
                 <div id="page-home">
-                    <!-- Score Card -->
-                    <div class="card score-card">
-                        <div class="score-value" id="score-value">--</div>
-                        <div class="score-label">Seu Score de Saúde</div>
-                        <div id="streak-container" style="margin-top:0.75rem;"></div>
-                    </div>
-                    
                     <!-- Insight -->
                     <div id="insight-container"></div>
                     
@@ -177,12 +170,57 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- Score Card (movido para o final) -->
+                    <div class="card score-card">
+                        <div class="score-value" id="score-value">--</div>
+                        <div class="score-label">Seu Score de Saúde</div>
+                        <div id="streak-container" style="margin-top:0.75rem;"></div>
+                    </div>
+                    
+                    <!-- Card da Clínica -->
+                    <div class="card clinica-card" style="background:linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);color:white;">
+                        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;">
+                            <div style="width:40px;height:40px;background:white;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                                <i class="fas fa-hospital" style="color:#6366F1;font-size:1.25rem;"></i>
+                            </div>
+                            <div>
+                                <div style="font-weight:600;">Sampaio Diagnóstico</div>
+                                <div style="font-size:0.75rem;opacity:0.9;">by Dr. Moacir</div>
+                            </div>
+                        </div>
+                        <a href="https://maps.google.com/?q=Avenida+Antônio+Marques+Ribeiro+820+Centro+São+Félix+do+Xingu+PA+68380-000" 
+                           target="_blank" 
+                           style="display:block;text-decoration:none;color:white;background:rgba(255,255,255,0.15);padding:0.75rem;border-radius:8px;margin-bottom:0.5rem;transition:background 0.2s;"
+                           onmouseover="this.style.background='rgba(255,255,255,0.25)'" 
+                           onmouseout="this.style.background='rgba(255,255,255,0.15)'">
+                            <div style="display:flex;align-items:flex-start;gap:0.5rem;">
+                                <i class="fas fa-map-marker-alt" style="margin-top:0.125rem;"></i>
+                                <div style="font-size:0.875rem;line-height:1.4;">
+                                    Av. Antônio Marques Ribeiro, 820<br>
+                                    Centro, São Félix do Xingu - PA<br>
+                                    CEP: 68.380-000
+                                </div>
+                            </div>
+                            <div style="font-size:0.75rem;margin-top:0.5rem;opacity:0.9;">
+                                <i class="fas fa-location-arrow"></i> Abrir no GPS
+                            </div>
+                        </a>
+                        <a href="https://sampaiodiagnostico.com.br" 
+                           target="_blank" 
+                           style="display:block;text-decoration:none;color:white;background:rgba(255,255,255,0.15);padding:0.75rem;border-radius:8px;text-align:center;font-size:0.875rem;transition:background 0.2s;"
+                           onmouseover="this.style.background='rgba(255,255,255,0.25)'" 
+                           onmouseout="this.style.background='rgba(255,255,255,0.15)'">
+                            <i class="fas fa-globe"></i> sampaiodiagnostico.com.br
+                        </a>
+                    </div>
                 </div>
                 
                 <!-- PAGE: CHECKIN -->
                 <div id="page-checkin" class="hidden">
                     <div class="card">
-                        <div class="card-title">Como você está?</div>
+                        <div class="card-title">Como você está hoje?</div>
+                        <div style="font-size:0.875rem;color:var(--gray-500);margin-bottom:1rem;">Dr. Moacir acompanha sua evolução</div>
                         
                         <!-- Humor -->
                         <div class="slider-group">
